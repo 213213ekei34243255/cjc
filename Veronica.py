@@ -231,5 +231,5 @@ if __name__ == "__main__":
         if user_question.lower() == 'quit':
             break
         else:
-            response = get_veronica_response(user_question, knowledge_base,"default_session")
+            response = get_veronica_response(user_question, knowledge_base)
             print('Veronica:', response)
