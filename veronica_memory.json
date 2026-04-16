@@ -18,7 +18,7 @@
 
   "admissions": {
     "pu": {
-      "status": "OPEN for CBSE, ICSE, and State board students; others must wait for further notification",
+      "status": "OPEN for CBSE only . --> ICSE, and State board students must wait for further notification",
       "class": "1st PUC / 11th",
       "end": "July end",
       "mode": "online",
@@ -30,6 +30,79 @@
       "process": ["test", "interview", "fee"]
     }
   },
+   "leadership": {
+    "principal": "Fr. Sebastian Mathai",
+    "vice_principal": "Fr. Bijo George"
+  },
+
+  "admissions": {
+    "pu": {
+      "status": "OPEN for CBSE, ICSE, State; others wait",
+      "class": "1st PUC / 11th",
+      "end": "July end",
+      "mode": "online",
+      "selection": "Class 10 marks"
+    },
+    "ibdp": {
+      "status": "OPEN",
+      "process": ["test", "interview"]
+    }
+  },
+
+  "streams": {
+    "science": ["PCMB", "PCMC"],
+    "commerce": ["CAMS", "CAME"],
+    "arts": ["PPES", "HESP", "HEPP"]
+  },
+
+  "fees": {
+    "PCMC": 85000,
+    "PCMB": 75000,
+    "CAMS": 85000,
+    "CAME": 85000,
+    "HESP": 50000,
+    "HEPP": 55000,
+    "PPES": 65000,
+    "IBDP": "₹5L / ₹6L"
+  },
+
+  "facilities": [
+    "labs","auditorium","sports","cafeteria",
+    "library","ATM","wellness centre"
+  ],
+
+  "student_life": {
+    "clubs": ["MUNSOC","NCC","CSA","Science Forum","Colossus"],
+    "events": ["XITE","Magnachrista","Magnasports"]
+  },
+
+  "faq": {
+    "admission_status": "PU admissions open (11th / 1st PUC) till July end",
+    "hostel": "No hostel facility available",
+    "direct_12th": "Cannot join 12th directly; must repeat 11th under PU",
+    "cbse_12th": "CBSE 12th not available",
+    "selection": "Based on Class 10 marks",
+    
+    "timings": {
+      "college": "Mon–Fri 8:30–3:15, Sat 8:30–12:05",
+      "library": "Mon–Fri 8:30–5:00, Sat 8:30–1:00",
+      "office": "Mon–Fri 8:30–4:30"
+    },
+
+    "contact": {
+      "phone": "+91 80 4012 9292",
+      "email": "office@cjc.christcollege.edu",
+      "location": "Hosur Road, Bangalore"
+    }
+  },
+
+
+  "logic": {
+    "pu_vs_ibdp": "Do not mix",
+    "pu": "no test/interview",
+    "ibdp": "has test + interview"
+  }
+}
 
   "commands": {
     "pu_admission": "Open PU Admission",
@@ -109,7 +182,7 @@
   },
 
   "location": {
-    "city": "Bangalore",
+    "city": "Bangalore, Dharmaram Campus Kormangala",
     "area": "Hosur Road",
     "access": ["bus","metro nearby","airport 42km"]
   }
