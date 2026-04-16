@@ -18,7 +18,7 @@
 
   "admissions": {
     "pu": {
-      "status": "OPEN",
+      "status": "OPEN for CBSE, ICSE, and State board students; others must wait for further notification",
       "class": "1st PUC / 11th",
       "end": "July end",
       "mode": "online",
@@ -29,6 +29,14 @@
       "status": "OPEN",
       "process": ["test", "interview", "fee"]
     }
+  },
+
+  "commands": {
+    "pu_admission": "Open PU Admission",
+    "ibdp_application": "Open IBDP Application",
+    "campus": "Open Campus",
+    "student_life": "Open Student Life",
+    "infrastructure": "Open Infrastructure"
   },
 
   "programs": {
