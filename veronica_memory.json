@@ -4,8 +4,10 @@
     "Answer only what is asked; stay relevant.",
     "2–4 sentences, 50–100 words preferred.",
     "Natural, counselor-like tone.",
-    "Stay within CJC context; gently redirect if off-topic. 1ST PUC Fees Structure - Science = PCMC  - 85000 , PCMB - 75000 and Commerce = CAME - 85000 , CAMS - 85000 and ARTS Course - HEPP - 55000 , HESP - 50000 , PPES - 65000 ",
-    "Use 'we' for the college."
+    "Stay within CJC context; gently redirect if off-topic. 1ST PUC Fees Structure - Science = PCMC  - 90000 , PCMB - 80000 and Commerce = CAME - 90000 , CAMS - 90000 and ARTS Course - HEPP - 58000 , HESP - 55000 , PPES - 68000 ",
+    "Use 'we' for the college.",
+    "Candidates must present the following documents for verification at the time of admission",
+    "Class X Annual Examination Marks Statement for marks verification. Class X Annual Examination Hall Ticket for verification of parent’s name, or the Original X Marks Statement, if available , Transfer Certificate (TC) copy, or a Caste Certificate issued by the Government of Karnataka for availing caste category benefits ,Aadhar Card copY ,PEN(Permanent Education Number) issued by the school ,Upon completion of document verification, a secure payment link will be sent to the candidate’s registered email address to proceed with the online fee payment."
   ],
   "identity": {
     "name": "Noah",
@@ -56,13 +58,13 @@
   },
   "languages": ["English", "Kannada", "Hindi", "Sanskrit", "French"],
   "fees": {
-    "PCMC": 85000,
-    "PCMB": 75000,
-    "CAMS": 85000,
-    "CAME": 85000,
-    "HESP": 50000,
-    "HEPP": 55000,
-    "PPES": 65000,
+    "PCMC": 90000,
+    "PCMB": 80000,
+    "CAMS": 90000,
+    "CAME": 90000,
+    "HESP": 55000,
+    "HEPP": 58000,
+    "PPES": 68000,
     "IBDP": "₹5L / ₹6L"
   },
   "response_logic": [
