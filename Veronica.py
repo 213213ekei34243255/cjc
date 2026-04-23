@@ -130,7 +130,7 @@ def get_gemini_response(user_question: str, session_id: str) -> str:
     )[0]
 
     retrieved_chunks = [
-        CHUNKS[h["corpus_id"]] for h in hits
+        CHUNKS[h["corpus_id"]]["text"] for h in hits
     ]
 
     MAX_CONTEXT_CHARS = 2000
