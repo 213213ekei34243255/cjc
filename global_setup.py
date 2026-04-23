@@ -61,7 +61,25 @@ def deduplicate_chunks(chunks):
 
     return unique
 
+# -----------------------------
+# 📘 DEFINITIONS LOGIC
+# -----------------------------
+def get_definition(query, data):
+    defs = data.get("definitions", {})
+    q = query.lower()
 
+    # detect if user wants detailed
+    is_detailed = any(word in q for word in ["detail", "full", "explain", "all", "subjects"])
+
+    # check keys
+    for key in defs:
+        if key in q:
+            # if detailed version exists
+            if is_detailed and f"{key}_full" in defs:
+                return defs[f"{key}_full"]
+            return defs[key]
+
+    return None
 # -----------------------------
 # EMBEDDINGS
 # -----------------------------
@@ -163,6 +181,11 @@ def format_response(text, data):
 # -----------------------------
 def get_response(query, data, chunks, chunk_embs):
     q = query.lower()
+
+    # ---- DEFINITIONS FIRST ----
+    definition = get_definition(query, data)
+    if definition:
+        return format_response(definition, data)
 
     # ---- FEES PRIORITY ----
     if "fee" in q or "fees" in q:
