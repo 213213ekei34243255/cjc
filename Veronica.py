@@ -112,6 +112,7 @@ def load_history(session_id: str, limit: int = 5):
 # --------------------
 # Main Gemini + RAG
 # --------------------
+
 def get_gemini_response(user_question: str, session_id: str) -> str:
     # 1) Encode user query
     user_emb = model_embed.encode(
@@ -192,17 +193,40 @@ def get_gemini_response(user_question: str, session_id: str) -> str:
 # -------------------------------------------------
 # Function to get Veronica's response based on KB
 # -------------------------------------------------
+from global_setup import DATA
+def handle_stream_query(query, data):
+    q = query.lower()
+
+    mappings = data.get("mappings", {})
+    fees = data.get("fees", {})
+
+    for key, streams in mappings.items():
+        if key in q:
+            results = []
+            for s in streams:
+                if s in fees:
+                    results.append(f"{s} – ₹{fees[s]}")
+            return "\n".join(results)
+
+    return None
 def get_veronica_response(user_question: str, knowledge_base: Dict, session_id: str) -> str:
     # quick utility commands
     if user_question.lower() == 'date':
         answer = f"Today's date is {datetime.now().strftime('%Y-%m-%d')}"
-        # store in history
         save_message(session_id, "user", user_question)
         save_message(session_id, "assistant", answer)
         return answer
 
     if user_question.lower() == 'time':
         answer = f"The current time is {datetime.now().strftime('%H:%M:%S')}"
+        save_message(session_id, "user", user_question)
+        save_message(session_id, "assistant", answer)
+        return answer
+
+    # 🔥 NEW: Handle stream/fees BEFORE anything else
+    stream_answer = handle_stream_query(user_question, DATA)
+    if stream_answer:
+        answer = stream_answer
         save_message(session_id, "user", user_question)
         save_message(session_id, "assistant", answer)
         return answer
@@ -224,7 +248,6 @@ def get_veronica_response(user_question: str, knowledge_base: Dict, session_id: 
     save_message(session_id, "assistant", answer)
 
     return answer
-
 # Main section for testing purposes
 if __name__ == "__main__":
     knowledge_base = load_knowledge_base('knowledge_base.json')
