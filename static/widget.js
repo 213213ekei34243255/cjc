@@ -386,7 +386,7 @@
       container.innerHTML = `
         <div class="chatbox__support" id="vai_support" aria-hidden="true">
           <div class="chatbox__header">
-            <div class="chatbox__image--header"><img src="${BASE_API}/static/logo.png" alt="VAI" /></div>
+            
             <div class="chatbox__content--header">
               <h4 class="chatbox__heading--header">Noah</h4>
               <p class="chatbox__description--header">Institutional Language Model</p>
