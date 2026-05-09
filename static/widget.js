@@ -47,218 +47,332 @@
 
       // CSS moved into shadow (note: replaced :root with :host to scope CSS variables)
       const css = `
-:host{
-  --primary:#ff2fa6;
-  --primaryLight:#0b42a7;
-  --text-color:black;
-  --neon:#ff2fa6;
-  --primaryGradient: linear-gradient(135deg,#0b0f1a 0%,#17f38c 100%);
-  --secondaryGradient: linear-gradient(180deg,#ffffff,#f2f2f2);
-  --primaryBoxShadow: 0 0 25px rgba(243, 16, 148, 0.84);
-  --secondaryBoxShadow:0 10px 30px rgba(0,0,0,0.45);
-  --header-bg: url("${BASE_API}/static/charlie.jpeg");
-}
-
-.vai-chatbox{
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 2147483647 !important;
-  font-family: 'Inter', Arial, Helvetica, sans-serif;
-}
-
-/* ================= BUTTON ================= */
-.vai-chatbox .chatbox__button{
-  text-align:right;
-}
-
-.vai-chatbox .chatbox__button button{
-  padding:10px;
-  border:none;
-  outline:none;
-  cursor:pointer;
-  border-radius:50%;
-  width:64px;
-  height:64px;
-  background: radial-gradient(circle at top,var(--neon),#0b0f1a);
-  color:#000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 0 25px rgba(243, 16, 148, 0.84);
-  transition: transform .25s ease, box-shadow .25s ease;
-}
-
-.vai-chatbox .chatbox__button button:hover{
-  transform: scale(1.08);
-  box-shadow:0 0 40px rgba(243, 16, 148, 0.84);
-}
-
-/* ================= CONTAINER ================= */
-.vai-chatbox .chatbox__support{
-  display:flex;
-  flex-direction:column;
-  position: fixed;
-  bottom: 95px;
-  right: 20px;
-  width:360px;
-  height:470px;
-  border-radius:18px;
-  overflow:hidden;
-  backdrop-filter: blur(20px);
-  background: rgba(15,18,30,0.85);
-  transform: translateY(12px);
-  opacity:0;
-  pointer-events:none;
-  transition: all .3s ease-in-out;
-  box-shadow: var(--secondaryBoxShadow);
-  border: 1px solid rgba(255,255,255,0.12);
-}
-
-.vai-chatbox .chatbox--active{
-  transform: translateY(0);
-  opacity:1;
-  pointer-events:auto;
-}
-
-/* ================= HEADER ================= */
-.vai-chatbox .chatbox__header{
-  background-image: var(--header-bg);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-
-
-  color:black;
-  padding:14px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  box-shadow: inset 0 -1px 0 rgba(255,255,255,0.2);
-}
-
-.vai-chatbox .chatbox__image--header img{
-  width:130px;
-  height:auto;
-  object-fit:contain;
-  background:transparent;
-  filter: drop-shadow(0 0 12px rgba(243, 16, 148, 0.84));
-}
-
-.vai-chatbox .chatbox__heading--header{
-  font-size:1.05rem;
-  margin:0;
-  color:black;
-}
-
-.vai-chatbox .chatbox__description--header{
-  font-size:0.85rem;
-  color:black;
-  margin:0;
-}
-
-/* ================= MESSAGES ================= */
-.vai-chatbox .chatbox__messages{
-  padding:14px;
-  flex:1;
-  overflow:auto;
-  display:flex;
-  flex-direction:column-reverse;
-  gap:10px;
-  background:
-    radial-gradient(circle at top,rgba(23,243,140,0.08),transparent),
-    #ffffff;
-}
-
-.vai-chatbox .messages__item{
-  max-width:72%;
-  padding:10px 14px;
-  border-radius:16px;
-  background: linear-gradient(145deg,#f0f6ff,#ffffff);
-  color:#000;
-  align-self:flex-start;
-  word-wrap:break-word;
-  white-space:pre-wrap;
-  box-shadow:0 6px 16px rgba(0,0,0,0.08);
-}
-
-.vai-chatbox .messages__item--operator{
-  background: linear-gradient(135deg,var(--primary),#0b0f1a);
-  color:#000;
-  align-self:flex-end;
-  box-shadow:0 0 18px rgba(23,243,140,0.45);
-}
-
-/* ================= FOOTER ================= */
-.vai-chatbox .chatbox__footer{
-  padding:12px;
-  background: linear-gradient(180deg,#ffffff,#f3f3f3);
-  display:flex;
-  gap:8px;
-  align-items:center;
-  border-top:1px solid rgba(0,0,0,0.06);
-}
-
-.vai-chatbox .chatbox__footer input{
-  flex:1;
-  padding:10px 14px;
-  border-radius:999px;
-  border:1px solid #ddd;
-  outline:none;
-  font-size:14px;
-}
-
-.vai-chatbox .chatbox__footer button{
-  padding:9px 14px;
-  border-radius:10px;
-  background: linear-gradient(135deg,var(--primary),#0b0f1a);
-  color:#000;
-  border:none;
-  cursor:pointer;
-  box-shadow:0 0 12px rgba(243, 16, 148, 0.84);
-}
-
-/* ================= STATUS & LINKS ================= */
-.vai-chatbox .status{
-  padding:8px 12px;
-  color:#777;
-  font-size:12px;
-  text-align:center;
-}
-
-.vai-chatbox a.vai-link{
-  color:var(--primary);
-  text-decoration:underline;
-  word-break:break-all;
-}
-
-/* ================= COPYRIGHT ================= */
-.vai-chatbox .chatbox__copyright{
-  background:#000;
-  color:#bbb;
-  font-size:11px;
-  text-align:center;
-  padding:4px 0;
-  font-style:italic;
-  letter-spacing:0.3px;
-}
-
-.vai-chatbox .chatbox__copyright a{
-  color:#bbb;
-  text-decoration:none;
-  transition:color .2s ease;
-}
-
-.vai-chatbox .chatbox__copyright a:hover{
-  color:#fff;
-  text-decoration:underline;
-}
-
-.vai-chatbox .chatbox__button i{
-  font-size:30px;
-  line-height:1;
-}
-`;
+        :host{
+          --primary: #00d4ff;
+          --primary-glow: rgba(0, 212, 255, 0.35);
+          --accent: #7b5ea7;
+          --accent2: #ff4ecd;
+          --bg-deep: #050a12;
+          --bg-panel: rgba(8, 15, 28, 0.94);
+          --bg-glass: rgba(255,255,255,0.04);
+          --border-subtle: rgba(0,212,255,0.18);
+          --border-strong: rgba(0,212,255,0.5);
+          --text-main: #e8f4ff;
+          --text-muted: #6a8aaa;
+          --text-dim: #3a5570;
+          --neon: #00d4ff;
+          --primaryGradient: linear-gradient(160deg, rgba(12,22,42,0.97) 0%, rgba(6,12,26,0.99) 100%);
+          --secondaryGradient: linear-gradient(180deg, rgba(4,10,20,0.9), rgba(2,6,16,0.95));
+          --primaryBoxShadow: 0 0 28px rgba(0,212,255,0.4), 0 8px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+          --secondaryBoxShadow: 0 0 0 1px rgba(0,212,255,0.08), 0 24px 64px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06);
+          --header-bg: url("${BASE_API}/static/charlie.jpeg");
+        }
+        
+        /* ================= BUTTON ================= */
+        .vai-chatbox{
+          position: fixed;
+          bottom: 24px;
+          right: 24px;
+          z-index: 2147483647 !important;
+          font-family: 'Inter', 'Segoe UI', Arial, Helvetica, sans-serif;
+        }
+        
+        .vai-chatbox .chatbox__button{
+          text-align: right;
+        }
+        
+        .vai-chatbox .chatbox__button button{
+          padding: 0;
+          border: 1px solid rgba(0,212,255,0.4);
+          outline: none;
+          cursor: pointer;
+          border-radius: 50%;
+          width: 58px;
+          height: 58px;
+          background: linear-gradient(135deg, #0a2540, #12103a);
+          color: var(--primary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: var(--primaryBoxShadow);
+          transition: transform .25s ease, box-shadow .25s ease;
+          animation: vai-float 3s ease-in-out infinite;
+          position: relative;
+        }
+        
+        .vai-chatbox .chatbox__button button::before{
+          content: '';
+          position: absolute;
+          inset: -5px;
+          border-radius: 50%;
+          border: 1px solid rgba(0,212,255,0.15);
+          animation: vai-ring-pulse 2s ease-in-out infinite;
+          pointer-events: none;
+        }
+        
+        .vai-chatbox .chatbox__button button:hover{
+          transform: scale(1.07);
+          box-shadow: 0 0 40px rgba(0,212,255,0.6), 0 8px 28px rgba(0,0,0,0.6);
+        }
+        
+        @keyframes vai-float{
+          0%, 100% { transform: translateY(0); }
+          50%       { transform: translateY(-4px); }
+        }
+        @keyframes vai-ring-pulse{
+          0%, 100% { opacity: 0.5; transform: scale(1); }
+          50%       { opacity: 0; transform: scale(1.25); }
+        }
+        
+        /* ================= CONTAINER ================= */
+        .vai-chatbox .chatbox__support{
+          display: flex;
+          flex-direction: column;
+          position: fixed;
+          bottom: 94px;
+          right: 24px;
+          width: 360px;
+          height: 490px;
+          border-radius: 20px;
+          overflow: hidden;
+          background: linear-gradient(160deg, rgba(12,22,42,0.97) 0%, rgba(6,12,26,0.99) 100%);
+          border: 1px solid var(--border-subtle);
+          transform: translateY(14px) scale(0.98);
+          opacity: 0;
+          pointer-events: none;
+          transition: transform .3s cubic-bezier(0.34,1.4,0.64,1), opacity .25s ease;
+          box-shadow: var(--secondaryBoxShadow);
+        }
+        
+        /* Top edge scan-line accent */
+        .vai-chatbox .chatbox__support::before{
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 2px;
+          background: linear-gradient(90deg, transparent 0%, var(--primary) 40%, var(--accent2) 70%, transparent 100%);
+          opacity: 0.75;
+          z-index: 10;
+        }
+        
+        /* Subtle grid overlay */
+        .vai-chatbox .chatbox__support::after{
+          content: '';
+          position: absolute;
+          inset: 0;
+          background-image:
+            linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+          background-size: 36px 36px;
+          pointer-events: none;
+          z-index: 0;
+        }
+        
+        .vai-chatbox .chatbox--active{
+          transform: translateY(0) scale(1);
+          opacity: 1;
+          pointer-events: auto;
+        }
+        
+        /* ================= HEADER ================= */
+        .vai-chatbox .chatbox__header{
+          position: relative;
+          z-index: 2;
+          background: linear-gradient(180deg, rgba(0,40,80,0.55) 0%, rgba(0,16,36,0.3) 100%);
+          border-bottom: 1px solid var(--border-subtle);
+          color: var(--text-main);
+          padding: 14px 16px;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        
+        .vai-chatbox .chatbox__image--header img{
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          object-fit: cover;
+          box-shadow: 0 0 14px rgba(0,212,255,0.45);
+          border: 1px solid var(--border-subtle);
+        }
+        
+        .vai-chatbox .chatbox__heading--header{
+          font-size: 14px;
+          font-weight: 600;
+          margin: 0;
+          color: var(--text-main);
+          letter-spacing: 0.3px;
+        }
+        
+        .vai-chatbox .chatbox__description--header{
+          font-size: 11px;
+          color: #1aff90;
+          margin: 2px 0 0;
+          letter-spacing: 0.5px;
+          display: flex;
+          align-items: center;
+          gap: 5px;
+        }
+        
+        /* Online pulse dot — add a span.vai-online inside .chatbox__description--header */
+        .vai-chatbox .vai-online{
+          display: inline-block;
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #1aff90;
+          box-shadow: 0 0 7px #1aff90;
+          animation: vai-pulse 2s infinite;
+        }
+        
+        @keyframes vai-pulse{
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.35; }
+        }
+        
+        /* ================= MESSAGES ================= */
+        .vai-chatbox .chatbox__messages{
+          position: relative;
+          z-index: 1;
+          padding: 14px;
+          flex: 1;
+          overflow: auto;
+          display: flex;
+          flex-direction: column-reverse;
+          gap: 10px;
+          background:
+            radial-gradient(ellipse at top left, rgba(0,212,255,0.06) 0%, transparent 55%),
+            radial-gradient(ellipse at bottom right, rgba(123,94,167,0.07) 0%, transparent 50%),
+            rgba(4, 8, 20, 0.85);
+          scrollbar-width: thin;
+          scrollbar-color: rgba(0,212,255,0.2) transparent;
+        }
+        
+        /* Bot bubble */
+        .vai-chatbox .messages__item{
+          max-width: 72%;
+          padding: 10px 14px;
+          border-radius: 16px 16px 16px 4px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(0,212,255,0.12);
+          backdrop-filter: blur(8px);
+          color: var(--text-main);
+          align-self: flex-start;
+          word-wrap: break-word;
+          white-space: pre-wrap;
+          font-size: 13px;
+          line-height: 1.55;
+          box-shadow: none;
+        }
+        
+        /* User bubble */
+        .vai-chatbox .messages__item--operator{
+          border-radius: 16px 16px 4px 16px;
+          background: linear-gradient(135deg, rgba(0,120,180,0.3), rgba(123,94,167,0.25));
+          border-color: rgba(0,212,255,0.25);
+          color: var(--text-main);
+          align-self: flex-end;
+          box-shadow: 0 0 14px rgba(0,212,255,0.1);
+        }
+        
+        /* ================= FOOTER ================= */
+        .vai-chatbox .chatbox__footer{
+          position: relative;
+          z-index: 2;
+          padding: 12px 14px;
+          background: rgba(4,10,20,0.88);
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          border-top: 1px solid var(--border-subtle);
+        }
+        
+        .vai-chatbox .chatbox__footer input{
+          flex: 1;
+          padding: 10px 14px;
+          border-radius: 12px;
+          border: 1px solid var(--border-subtle);
+          background: rgba(255,255,255,0.04);
+          color: var(--text-main);
+          font-size: 13px;
+          outline: none;
+          transition: border-color .2s, box-shadow .2s;
+        }
+        
+        .vai-chatbox .chatbox__footer input::placeholder{
+          color: var(--text-dim);
+        }
+        
+        .vai-chatbox .chatbox__footer input:focus{
+          border-color: var(--border-strong);
+          box-shadow: 0 0 0 3px rgba(0,212,255,0.08);
+        }
+        
+        .vai-chatbox .chatbox__footer button{
+          width: 38px;
+          height: 38px;
+          flex-shrink: 0;
+          border-radius: 12px;
+          border: 1px solid rgba(0,212,255,0.4);
+          background: linear-gradient(135deg, rgba(0,180,255,0.18), rgba(123,94,167,0.22));
+          color: var(--primary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 0 12px rgba(0,212,255,0.15), inset 0 1px 0 rgba(255,255,255,0.08);
+          transition: background .2s, box-shadow .2s, transform .15s;
+        }
+        
+        .vai-chatbox .chatbox__footer button:hover{
+          background: linear-gradient(135deg, rgba(0,212,255,0.32), rgba(123,94,167,0.38));
+          box-shadow: 0 0 22px rgba(0,212,255,0.35);
+          transform: scale(1.06);
+        }
+        
+        /* ================= STATUS & LINKS ================= */
+        .vai-chatbox .status{
+          padding: 8px 12px;
+          color: var(--text-dim);
+          font-size: 11px;
+          text-align: center;
+          letter-spacing: 0.3px;
+        }
+        
+        .vai-chatbox a.vai-link{
+          color: var(--primary);
+          text-decoration: underline;
+          word-break: break-all;
+        }
+        
+        /* ================= COPYRIGHT ================= */
+        .vai-chatbox .chatbox__copyright{
+          position: relative;
+          z-index: 2;
+          background: rgba(2,6,16,0.9);
+          border-top: 1px solid rgba(0,212,255,0.08);
+          color: var(--text-dim);
+          font-size: 10px;
+          text-align: center;
+          padding: 5px 0;
+          letter-spacing: 0.5px;
+        }
+        
+        .vai-chatbox .chatbox__copyright a{
+          color: var(--text-dim);
+          text-decoration: none;
+          transition: color .2s;
+        }
+        
+        .vai-chatbox .chatbox__copyright a:hover{
+          color: var(--primary);
+        }
+        
+        .vai-chatbox .chatbox__button i{
+          font-size: 26px;
+          line-height: 1;
+        }
+        `;
 
       // create style element and append to shadow root (isolated)
       const styleEl = document.createElement('style');
