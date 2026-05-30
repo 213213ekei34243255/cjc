@@ -43,7 +43,7 @@
   },
   "admissions": {
     "pu": {
-      "status": " Admissions are now OPEN for all - CBSE , STATE (SSLC)only ,ICSE, NIOS and other board students can apply now.",
+      "status": "Applications are closed for PUC but IBDP Applications are Open. Kindly Contact Christ Junior College for more queries.",
       "class": "1st PUC / 11th",
       "mode": "online",
       "selection": "Class 10 marks",
@@ -129,7 +129,7 @@
     "Social Science"
   ],
   "faq": {
-    "admission_status": "Admissions are now OPEN for all - CBSE , STATE (SSLC)only ,ICSE, NIOS and other board students can apply now.",
+    "admission_status": "Applications are closed for PUC but IBDP Applications are Open. Kindly Contact Christ Junior College for more queries.",
     "hostel": "No hostel facility available",
     "direct_12th": "Cannot join 12th directly; must repeat 11th under PU",
     "cbse_12th": "CBSE 12th not available",
@@ -140,7 +140,7 @@
       "office": "Mon–Fri 8:30–4:30"
     },
     "contact": {
-      "phone": "+91 80 4012 9292",
+      "phone": "+91 080 4012 9292",
       "email": "office@cjc.christcollege.edu",
       "location": "Hosur Road, Bangalore"
     }
