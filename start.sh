@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+export LD_LIBRARY_PATH=/app/llama-bin:$LD_LIBRARY_PATH
 
 echo "========================================"
 echo "Starting llama-server..."
