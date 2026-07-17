@@ -1,24 +1,21 @@
 #!/bin/bash
+set -e
 
-# Exit early on errors
-set -eu
+echo "Starting llama-server..."
 
-# Python buffers stdout. Without this, you won't see what you "print" in the Activity Logs
-export PYTHONUNBUFFERED=true
+/app/llama.cpp/build/bin/llama-server \
+    -m /var/data/models/qwen2.5-1.5b-instruct-q4_k_m.gguf \
+    --host 127.0.0.1 \
+    --port 8080 &
 
-# Install Python 3 virtual env
-VIRTUALENV=.data/venv
+echo "Waiting for model..."
+sleep 15
 
-if [ ! -d $VIRTUALENV ]; then
-  python3 -m venv $VIRTUALENV
-fi
+echo "Starting Flask..."
 
-if [ ! -f $VIRTUALENV/bin/pip ]; then
-  curl --silent --show-error --retry 5 https://bootstrap.pypa.io/get-pip.py | $VIRTUALENV/bin/python
-fi
-
-# Install the requirements
-$VIRTUALENV/bin/pip install -r requirements.txt
-
-# Run a glorious Python 3 server
-$VIRTUALENV/bin/python3 app.py
+exec gunicorn app:app \
+    -k gthread \
+    --threads 4 \
+    -w 1 \
+    --timeout 120 \
+    --bind 0.0.0.0:${PORT}
