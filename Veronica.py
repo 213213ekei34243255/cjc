@@ -124,7 +124,7 @@ def get_llama_response(user_question: str, session_id: str) -> str:
     hits = util.semantic_search(
         user_emb,
         chunk_embs_tensor,
-        top_k=5
+        top_k=20
     )[0]
 
     retrieved_chunks = [
@@ -132,10 +132,10 @@ def get_llama_response(user_question: str, session_id: str) -> str:
         for h in hits
     ]
 
-    context = "\n".join(
+    context = "\n\n".join(
         c["text"] if isinstance(c, dict) else str(c)
         for c in retrieved_chunks
-    )[:2500]
+    )
 
     history = load_history(session_id, limit=8)
 
@@ -143,15 +143,11 @@ def get_llama_response(user_question: str, session_id: str) -> str:
         {
             "role": "system",
             "content": """
-            You are Noah, the official AI assistant for Christ Junior College made by CogniAI Studios and your Version architecture is Rexy - 1.
-            
-            Use the retrieved knowledge base as your primary source for information about Christ Junior College.
-            
-            For general questions (science, mathematics, technology, programming, history, current concepts, careers, etc.), use your own knowledge to provide accurate, detailed, and well-structured answers.
-            You can answer all the question it is not just limited with Christ Junior College , Answer whatever you know from your trained dataset
-            If the user's question is about Christ Junior College and the knowledge base contains relevant information, prioritize that information.
-            
-            Do not invent facts about Christ Junior College if they are not present in the retrieved knowledge.
+           "You are Noah, the official AI assistant for Christ Junior College.\n"
+            "Use every relevant piece of information available in the supplied knowledge base.\n"
+            "For college-related questions, prioritize the knowledge base completely.\n"
+            "For general questions, use your own knowledge.\n"
+            "If the knowledge base does not contain the answer, clearly state that instead of inventing information."
         """
         }
     ]
