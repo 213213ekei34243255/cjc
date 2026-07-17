@@ -6,7 +6,7 @@ from sentence_transformers import SentenceTransformer
 # -----------------------------
 # MODEL INIT
 # -----------------------------
-model_embed = SentenceTransformer("all-MiniLM-L6-v2")
+model_embed = SentenceTransformer("BAAI/bge-base-en-v1.5")
 
 
 # -----------------------------
@@ -104,7 +104,7 @@ def compute_embeddings(chunks, emb_path="chunk_embs.npy", force_recompute=False)
 # -----------------------------
 # SEARCH
 # -----------------------------
-def search_memory(query, chunks, chunk_embs, top_k=5):
+def search_memory(query, chunks, chunk_embs, top_k=15):
     query_emb = model_embed.encode(
         [query],
         convert_to_numpy=True,
@@ -114,7 +114,13 @@ def search_memory(query, chunks, chunk_embs, top_k=5):
     scores = np.dot(chunk_embs, query_emb)
     top_indices = np.argsort(scores)[-top_k:][::-1]
 
-    return [chunks[i]["text"] for i in top_indices]
+    return [
+        {
+            "text": chunks[i]["text"],
+            "score": float(scores[i])
+        }
+        for i in top_indices
+    ]
 
 
 # -----------------------------
@@ -165,8 +171,7 @@ def format_response(text, data):
     sentences = [s.strip() for s in sentences if s.strip()]
 
     # Keep 2–4 sentences
-    if len(sentences) > 4:
-        sentences = sentences[:4]
+    
 
     formatted = ". ".join(sentences)
 
