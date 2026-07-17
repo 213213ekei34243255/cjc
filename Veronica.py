@@ -258,7 +258,7 @@ def get_veronica_response(user_question: str, knowledge_base: Dict, session_id: 
         answer = get_answer_for_question(best_match, knowledge_base) or "No answer found."
     else:
         # If no match is found in the knowledge base, ask Gemini to generate a response
-        answer = get_gemini_response(user_question, session_id)
+         answer = get_llama_response(user_question, session_id)
 
     # Save this turn in Redis so future messages have context
     save_message(session_id, "user", user_question)
