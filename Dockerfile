@@ -2,7 +2,6 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install build tools
 RUN apt-get update && apt-get install -y \
     git \
     cmake \
@@ -16,11 +15,11 @@ RUN git clone https://github.com/ggml-org/llama.cpp.git && \
     cmake -B build && \
     cmake --build build -j$(nproc)
 
-# Copy project
-COPY . .
+COPY requirements.txt .
 
-# Install Python packages
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
 
 RUN chmod +x start.sh
 
