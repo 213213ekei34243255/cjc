@@ -6,7 +6,7 @@ echo "========================================"
 echo "Starting llama-server..."
 echo "========================================"
 
-/app/llama-bin/llama-server \
+/opt/llama/llama-server \
     -m /var/data/models/qwen2.5-1.5b-instruct-q4_k_m.gguf \
     --host 127.0.0.1 \
     --port 8080 \
