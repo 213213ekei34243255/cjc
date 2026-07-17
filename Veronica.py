@@ -113,17 +113,21 @@ def load_history(session_id: str, limit: int = 5):
 # Main Gemini + RAG
 # --------------------
 
-def get_gemini_response(user_question: str, session_id: str) -> str:
-    # 1) Encode user query
+import requests
+
+LLAMA_URL = "http://127.0.0.1:8080/v1/chat/completions"
+
+
+def get_llama_response(user_question: str, session_id: str) -> str:
+
+    # Encode query
     user_emb = model_embed.encode(
         user_question,
         convert_to_tensor=True
     )
 
-    # Convert stored numpy embeddings → torch tensor
     chunk_embs_tensor = torch.tensor(CHUNK_EMBS)
 
-    # Semantic search
     hits = util.semantic_search(
         user_emb,
         chunk_embs_tensor,
@@ -131,63 +135,68 @@ def get_gemini_response(user_question: str, session_id: str) -> str:
     )[0]
 
     retrieved_chunks = [
-        CHUNKS[h["corpus_id"]]["text"] for h in hits
+        CHUNKS[h["corpus_id"]]["text"]
+        for h in hits
     ]
 
-    MAX_CONTEXT_CHARS = 2000
     context = "\n".join(
         c["text"] if isinstance(c, dict) else str(c)
         for c in retrieved_chunks
-    ).strip()[:MAX_CONTEXT_CHARS]
+    )[:2500]
 
-    # 2) Load chat history
-    history = load_history(session_id, limit=3)
+    history = load_history(session_id, limit=8)
 
-    history_text = ""
-    for msg in history:
-        prefix = "User" if msg["role"] == "user" else "Veronica"
-        history_text += f"{prefix}: {msg['text']}\n"
+    messages = [
+        {
+            "role": "system",
+            "content":
+                "You are Noah, the institutional assistant for Christ Junior College.\n"
+                "Answer ONLY using the supplied knowledge base context whenever possible.\n"
+                "If the answer is not present, answer naturally without inventing facts."
+        }
+    ]
 
-    # 3) Final prompt
-    final_prompt = (
-        "You are Noah, the assistant for Christ Junior College.\n\n"
-        "Context:\n"
-        f"{context}\n\n"
-        f"User question: {user_question}"
-    )
+    if context:
+        messages.append({
+            "role": "system",
+            "content": f"Knowledge Base:\n{context}"
+        })
+
+    for m in history:
+        messages.append({
+            "role": m["role"],
+            "content": m["text"]
+        })
+
+    messages.append({
+        "role": "user",
+        "content": user_question
+    })
+
+    payload = {
+        "model": "local",
+        "messages": messages,
+        "temperature": 0.7,
+        "max_tokens": 512
+    }
 
     try:
-        model = genai.GenerativeModel(
-            model_name="gemini-2.5-flash",
-            generation_config={
-                "temperature": 0.7,
 
-            }
+        r = requests.post(
+            LLAMA_URL,
+            json=payload,
+            timeout=120
         )
 
-        # Rebuild Gemini chat with stored history
-        gemini_history = [
-            {
-                "role": "user" if m["role"] == "user" else "model",
-                "parts": [m["text"]],
-            }
-            for m in history
-        ]
+        r.raise_for_status()
 
-        chat = model.start_chat(history=gemini_history)
-        response = chat.send_message(final_prompt)
+        result = r.json()
 
-        answer = (
-            response.text.strip()
-            if response and getattr(response, "text", None)
-            else "Empty response from Gemini."
-        )
-
-        return answer
+        return result["choices"][0]["message"]["content"].strip()
 
     except Exception as e:
-        return f"Error calling Gemini: {e}"
 
+        return f"Local model error: {e}"
 
 
 # -------------------------------------------------
