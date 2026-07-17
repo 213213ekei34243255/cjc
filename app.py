@@ -21,7 +21,9 @@ ALLOWED_ORIGINS = {
     "https://christjuniorcollege.in",
     "https://www.christjuniorcollege.in",
     "https://byncai.net",
-    "https://www.byncai.net"
+    "https://www.byncai.net",
+    "https://www.cogniaistudios.com",
+    "https://cogniaistudios.com"
 }
 
 # Enable CORS (helps for simple cases; explicit OPTIONS handling below is the key)
