@@ -5,7 +5,7 @@ echo "========================================"
 echo "Starting llama-server..."
 echo "========================================"
 
-/app/llama.cpp/build/bin/llama-server \
+/app/llama-bin/llama-server \
     -m /var/data/models/qwen2.5-1.5b-instruct-q4_k_m.gguf \
     --host 127.0.0.1 \
     --port 8080 \
@@ -39,6 +39,7 @@ if ! curl -s http://127.0.0.1:8080/health >/dev/null 2>&1; then
 fi
 
 echo "========================================"
+echo "llama-server is ready."
 echo "Starting Gunicorn..."
 echo "========================================"
 
