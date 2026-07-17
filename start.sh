@@ -1,13 +1,34 @@
 #!/bin/bash
 set -e
-export LD_LIBRARY_PATH=/app/llama-bin:$LD_LIBRARY_PATH
+
+export LD_LIBRARY_PATH=/opt/llama:$LD_LIBRARY_PATH
+
+MODEL_DIR="/var/data/models"
+MODEL_FILE="$MODEL_DIR/qwen2.5-1.5b-instruct-q4_k_m.gguf"
+MODEL_URL="https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf"
+
+mkdir -p "$MODEL_DIR"
+
+if [ ! -f "$MODEL_FILE" ]; then
+    echo "========================================"
+    echo "Downloading Qwen model..."
+    echo "========================================"
+
+    curl -L -C - \
+        "$MODEL_URL" \
+        -o "$MODEL_FILE"
+
+    echo "========================================"
+    echo "Model download complete."
+    echo "========================================"
+fi
 
 echo "========================================"
 echo "Starting llama-server..."
 echo "========================================"
 
 /opt/llama/llama-server \
-    -m /var/data/models/qwen2.5-1.5b-instruct-q4_k_m.gguf \
+    -m "$MODEL_FILE" \
     --host 127.0.0.1 \
     --port 8080 \
     > /tmp/llama.log 2>&1 &
