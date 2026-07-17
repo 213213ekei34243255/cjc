@@ -2,27 +2,35 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Runtime dependencies
 RUN apt-get update && apt-get install -y \
     curl \
+    wget \
+    tar \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+# Download official llama.cpp binaries
+RUN mkdir -p /opt/llama && \
+    wget -O /tmp/llama.tar.gz \
+    https://github.com/ggml-org/llama.cpp/releases/download/b10057/llama-b10057-bin-ubuntu-x64.tar.gz && \
+    tar -xzf /tmp/llama.tar.gz -C /opt/llama --strip-components=1 && \
+    rm /tmp/llama.tar.gz
+
+# Make binaries executable
+RUN chmod +x /opt/llama/*
+
+# Tell Linux where the shared libraries are
+ENV LD_LIBRARY_PATH=/opt/llama
+
+# Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy your application
 COPY . .
 
-# Create missing compatibility symlinks
-RUN cd /app/llama-bin && \
-    ln -sf libllama-common.so.0.0.10056 libllama-common.so.0 && \
-    ln -sf libllama.so.0.0.10056 libllama.so.0 && \
-    ln -sf libggml.so.0.16.0 libggml.so.0 && \
-    ln -sf libggml-base.so.0.16.0 libggml-base.so.0
-
-ENV LD_LIBRARY_PATH=/app/llama-bin
-
 RUN chmod +x start.sh
-RUN chmod +x /app/llama-bin/*
 
 EXPOSE 10000
 
