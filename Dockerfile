@@ -18,7 +18,7 @@ RUN mkdir -p /opt/llama && \
 
 RUN chmod +x /opt/llama/*
 
-ENV LD_LIBRARY_PATH=/opt/llama
+ENV LD_LIBRARY_PATH=/opt/llama:$LD_LIBRARY_PATH
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
