@@ -280,7 +280,7 @@
           </div>
           <div class="chatbox__messages" id="vai_messages" aria-live="polite"></div>
           <div class="chatbox__copyright">
-            © 2026 <a href="https://www.cogniaistudios.com" target="_blank" rel="noopener noreferrer">CogniAI Studios</a>. All rights reserved.
+            © 2026 <a href="https://www.jonahbrowser.com" target="_blank" rel="noopener noreferrer">CogniAI Studios</a>. All rights reserved.
           </div>
           <div class="chatbox__footer">
             <input id="vai_input" type="text" placeholder="Write a message..." aria-label="Message" />
