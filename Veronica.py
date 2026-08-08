@@ -177,7 +177,7 @@ def handle_fee_query(query: str, data: dict) -> Optional[str]:
     return None
 
 
-def handle_affiliation_query(query: str) -> Optional[str]:
+def handle_affiliation_query(query: str, data: dict) -> Optional[str]:
     q = query.lower()
     if "hindu" in q or "religion" in q or "muslim" in q or "christian only" in q:
         return (
@@ -210,20 +210,20 @@ def handle_leadership_query(query: str, data: dict) -> Optional[str]:
     return None
 
 
-DETERMINISTIC_HANDLERS = [
+# Every handler now takes (query, data) -- no more silent split into two
+# lists with two different call conventions. That split is exactly what
+# caused handle_hostel_query() to get called with only one argument.
+ALL_DETERMINISTIC_HANDLERS = [
+    handle_fee_query,
     handle_affiliation_query,
     handle_hostel_query,
     handle_leadership_query,
+    handle_admission_query,
 ]
-DETERMINISTIC_HANDLERS_WITH_DATA = [handle_fee_query, handle_admission_query]
 
 
 def try_deterministic_answer(query: str, data: dict) -> Optional[str]:
-    for fn in DETERMINISTIC_HANDLERS:
-        result = fn(query)
-        if result:
-            return result
-    for fn in DETERMINISTIC_HANDLERS_WITH_DATA:
+    for fn in ALL_DETERMINISTIC_HANDLERS:
         result = fn(query, data)
         if result:
             return result
