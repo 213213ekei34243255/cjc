@@ -51,6 +51,37 @@ redis_client = redis.Redis.from_url(REDIS_URL, decode_responses=True) if REDIS_U
 LLAMA_URL = "http://127.0.0.1:8080/v1/chat/completions"
 
 # ---------------------------------------------------------------
+# Legacy compatibility shims.
+#
+# app.py still imports load_knowledge_base / save_knowledge_base by name
+# (it calls load_knowledge_base('knowledge_base.json') at module level, and
+# hits /save which calls save_knowledge_base). These are no longer used by
+# the actual answer-generation path -- try_deterministic_answer/get_llm_response
+# read from DATA (veronica_memory.json via global_setup), not this file --
+# but they must still exist here so `from Veronica import ...` doesn't crash
+# the whole app at startup like it just did.
+#
+# TODO: once app.py is updated to stop importing/calling these, delete this
+# block and drop the `knowledge_base` parameter from get_veronica_response.
+# ---------------------------------------------------------------
+
+def load_knowledge_base(file_path: str) -> dict:
+    try:
+        with open(file_path, 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        print(f"Error: File '{file_path}' not found.")
+    except json.JSONDecodeError:
+        print(f"Error: Unable to parse JSON file '{file_path}'.")
+    return {"questions": []}
+
+
+def save_knowledge_base(file_path: str, data: dict) -> None:
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=2)
+
+
+# ---------------------------------------------------------------
 # Standing behavioral rules -- ALWAYS sent, never subject to
 # semantic-search retrieval or top-k truncation.
 # ---------------------------------------------------------------
