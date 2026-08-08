@@ -293,7 +293,12 @@ def get_llm_response(user_question: str, session_id: str) -> str:
 # Main entrypoint
 # ---------------------------------------------------------------
 
-def get_veronica_response(user_question: str, session_id: str) -> str:
+def get_veronica_response(user_question: str, session_id: str, knowledge_base: Optional[Dict] = None) -> str:
+    # `knowledge_base` accepted only for backward compatibility with the
+    # Flask app's existing call site (app.py passes it as a kwarg). It is
+    # intentionally unused: the old knowledge_base.json path was dead code
+    # (defaulted to {"questions": []} and never matched anything). Once
+    # app.py is updated to drop this argument, remove the parameter here too.
     q_lower = user_question.lower().strip()
 
     if q_lower == "date":
