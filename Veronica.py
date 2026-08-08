@@ -194,6 +194,17 @@ def handle_affiliation_query(query: str, data: dict) -> Optional[str]:
             "but admission is open to students of all religions and backgrounds."
         )
     return None
+def handle_board_query(query: str, data: dict) -> Optional[str]:
+    q = query.lower()
+
+    if any(term in q for term in ["icse", "cbse", "state board", "which board", "what board"]):
+        if "icse" in q or "cbse" in q or "board" in q:
+            return (
+                "Christ Junior College is a Karnataka State Board Pre-University college "
+                "offering 1st PUC and 2nd PUC. It is not an ICSE or CBSE college. It is not available in Christ College. Its only available in Christ School and this website is Christ Junior College for 11th and 12th , Please visit the Christ School website for more details - https://christschoolblr.in/ or icse - https://christschool.info/ , cbse - https://christschool.edu.in/"
+            )
+
+    return None
 
 
 def handle_admission_query(query: str, data: dict) -> Optional[str]:
@@ -224,6 +235,7 @@ def handle_leadership_query(query: str, data: dict) -> Optional[str]:
 # caused handle_hostel_query() to get called with only one argument.
 ALL_DETERMINISTIC_HANDLERS = [
     handle_fee_query,
+    handle_board_query, 
     handle_affiliation_query,
     handle_hostel_query,
     handle_leadership_query,
