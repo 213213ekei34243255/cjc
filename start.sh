@@ -4,8 +4,8 @@ set -e
 export LD_LIBRARY_PATH=/opt/llama:$LD_LIBRARY_PATH
 
 MODEL_DIR="/var/data/models"
-MODEL_FILE="$MODEL_DIR/qwen2.5-1.5b-instruct-q4_k_m.gguf"
-MODEL_URL="https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct-GGUF/resolve/main/qwen2.5-1.5b-instruct-q4_k_m.gguf"
+MODEL_FILE="$MODEL_DIR/Qwen3-8B-Q4_K_M.gguf"
+MODEL_URL="https://huggingface.co/Qwen/Qwen3-8B-GGUF/resolve/main/Qwen3-8B-Q4_K_M.gguf"
 
 mkdir -p "$MODEL_DIR"
 
