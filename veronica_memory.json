@@ -46,6 +46,173 @@
     "principal": "Fr. Abin",
     "vice_principal": "Fr. Bijo George"
   },
+  {
+    "mid_term_examination_timetable": {
+      "title": "Mid-Term Examination Timetable",
+      "academic_year": "2026",
+      "term": "Sep/Oct 2026",
+      "course": "I PUC & II PUC",
+      "exam_timing": "10:00 AM to 01:00 PM",
+      "schedule": [
+        {
+          "date": "28.09.2026",
+          "day": "Monday",
+          "subjects": [
+            {
+              "name": "Kannada",
+              "code": "01"
+            }
+          ],
+          "timing": "10:00 AM to 01:00 PM"
+        },
+        {
+          "date": "29.09.2026",
+          "day": "Tuesday",
+          "subjects": [
+            {
+              "name": "Statistics",
+              "code": "31"
+            },
+            {
+              "name": "History",
+              "code": "21"
+            }
+          ],
+          "timing": "10:00 AM to 01:00 PM"
+        },
+        {
+          "date": "30.09.2026",
+          "day": "Wednesday",
+          "subjects": [
+            {
+              "name": "Chemistry",
+              "code": "34"
+            },
+            {
+              "name": "Accountancy",
+              "code": "30"
+            }
+          ],
+          "timing": "10:00 AM to 01:00 PM"
+        },
+        {
+          "date": "01.10.2026",
+          "day": "Thursday",
+          "subjects": [
+            {
+              "name": "English",
+              "code": "02"
+            }
+          ],
+          "timing": "10:00 AM to 01:00 PM"
+        },
+        {
+          "date": "02.10.2026",
+          "day": "Friday",
+          "event": "Gandhi Jayanthi Holiday"
+        },
+        {
+          "date": "03.10.2026",
+          "day": "Saturday",
+          "subjects": [
+            {
+              "name": "Mathematics",
+              "code": "35"
+            },
+            {
+              "name": "Business Studies",
+              "code": "27"
+            },
+            {
+              "name": "Psychology",
+              "code": "32"
+            }
+          ],
+          "timing": "10:00 AM to 01:00 PM"
+        },
+        {
+          "date": "04.10.2026",
+          "day": "Sunday",
+          "event": "Holiday"
+        },
+        {
+          "date": "05.10.2026",
+          "day": "Monday",
+          "subjects": [
+            {
+              "name": "Sociology",
+              "code": "28"
+            }
+          ],
+          "timing": "10:00 AM to 01:00 PM"
+        },
+        {
+          "date": "06.10.2026",
+          "day": "Tuesday",
+          "subjects": [
+            {
+              "name": "Computer Science",
+              "code": "41"
+            },
+            {
+              "name": "Basic Maths",
+              "code": "75"
+            }
+          ],
+          "timing": "10:00 AM to 01:00 PM"
+        },
+        {
+          "date": "07.10.2026",
+          "day": "Wednesday",
+          "subjects": [
+            {
+              "name": "Political Science",
+              "code": "29"
+            },
+            {
+              "name": "Biology",
+              "code": "36"
+            }
+          ],
+          "timing": "10:00 AM to 01:00 PM"
+        },
+        {
+          "date": "08.10.2026",
+          "day": "Thursday",
+          "subjects": [
+            {
+              "name": "Hindi",
+              "code": "03"
+            },
+            {
+              "name": "Sanskrit",
+              "code": "09"
+            },
+            {
+              "name": "French",
+              "code": "12"
+            }
+          ],
+          "timing": "10:00 AM to 01:00 PM"
+        },
+        {
+          "date": "09.10.2026",
+          "day": "Friday",
+          "subjects": [
+            {
+              "name": "Physics",
+              "code": "33"
+            },
+            {
+              "name": "Economics",
+              "code": "22"
+            }
+          ],
+          "timing": "10:00 AM to 01:00 PM"
+        }
+      ]
+    }
+  },
   "definitions": {
     "puc": "Pre-University Course (PUC) is a 2-year program (11th and 12th) under the Karnataka PU Board where students choose streams like Science, Commerce, or Arts based on their Class 10 results.",
     "puc_full": "Pre-University Course (PUC) is a 2-year academic program (1st PUC and 2nd PUC) under the Karnataka Pre-University Board. Students choose one of three main streams: Science (PCMC, PCMB), Commerce (CAMS, CAME), or Arts (PPES, HESP, HEPP). Admission is based on Class 10 marks, and the program prepares students for university-level education in their chosen field.",
