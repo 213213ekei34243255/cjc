@@ -46,7 +46,6 @@
     "principal": "Fr. Abin",
     "vice_principal": "Fr. Bijo George"
   },
-  {
     "mid_term_examination_timetable": {
       "title": "Mid-Term Examination Timetable",
       "academic_year": "2026",
@@ -211,8 +210,7 @@
           "timing": "10:00 AM to 01:00 PM"
         }
       ]
-    }
-  },
+    },
   "definitions": {
     "puc": "Pre-University Course (PUC) is a 2-year program (11th and 12th) under the Karnataka PU Board where students choose streams like Science, Commerce, or Arts based on their Class 10 results.",
     "puc_full": "Pre-University Course (PUC) is a 2-year academic program (1st PUC and 2nd PUC) under the Karnataka Pre-University Board. Students choose one of three main streams: Science (PCMC, PCMB), Commerce (CAMS, CAME), or Arts (PPES, HESP, HEPP). Admission is based on Class 10 marks, and the program prepares students for university-level education in their chosen field.",
