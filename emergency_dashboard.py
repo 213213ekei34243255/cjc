@@ -436,7 +436,9 @@ def _security_headers(resp):
     resp.headers["Cache-Control"] = "no-store"
     resp.headers["X-Content-Type-Options"] = "nosniff"
     resp.headers["X-Frame-Options"] = "DENY"
-    resp.headers["Referrer-Policy"] = "no-referrer"
+    # "origin" sends only the site address (never the path) to other sites. OpenStreetMap's tile
+    # servers block map tiles that arrive with no Referer at all, so "no-referrer" broke the map.
+    resp.headers["Referrer-Policy"] = "origin"
     nonce = getattr(g, "csp_nonce", "")
     resp.headers["Content-Security-Policy"] = (
         "default-src 'self'; "
