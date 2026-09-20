@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Emergency Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <style nonce="{{ csp_nonce }}">
+        :root { color-scheme: light; --navy:#1E2153; --red:#D64545; --ink:#23264A; --muted:#7A78A3; --bg:#F4F3FB; }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--ink); }
+        header { display:flex; align-items:center; justify-content:space-between; padding:12px 20px; background:var(--navy); color:#fff; }
+        header h1 { font-size:16px; margin:0; }
+        header form button { background:rgba(255,255,255,.14); color:#fff; border:none; border-radius:999px; padding:8px 16px; font-size:13px; cursor:pointer; }
+        #banner { padding:12px 20px; font-weight:700; font-size:15px; background:#E9E7F5; color:var(--ink); }
+        #banner.active { background:var(--red); color:#fff; }
+        .layout { display:grid; grid-template-columns: 300px 1fr; gap:16px; padding:16px 20px; }
+        @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+        .card { background:#fff; border-radius:16px; padding:14px 16px; box-shadow:0 8px 24px rgba(35,38,74,.08); margin-bottom:12px; }
+        .card h3 { margin:0 0 8px; font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+        .session { cursor:pointer; border:2px solid transparent; }
+        .session.selected { border-color: var(--navy); }
+        .badge { display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:700; }
+        .badge.ACTIVE { background:var(--red); color:#fff; }
+        .badge.ENDED, .badge.EXPIRED { background:#E9E7F5; color:var(--muted); }
+        .muted { color:var(--muted); font-size:13px; }
+        #map { height: 46vh; min-height:300px; border-radius:16px; }
+        .kv { display:flex; justify-content:space-between; gap:12px; padding:3px 0; font-size:14px; }
+        .kv span:last-child { font-weight:600; font-family: ui-monospace, Consolas, monospace; text-align:right; }
+        .warn { color:var(--red); font-weight:700; font-size:13px; margin-top:6px; }
+        .btn { display:inline-block; padding:9px 14px; border-radius:999px; border:none; cursor:pointer; font-size:13px; font-weight:600; margin:6px 8px 0 0; text-decoration:none; }
+        .btn-primary { background:var(--navy); color:#fff; }
+        .btn-outline { background:#fff; color:var(--navy); border:1px solid #D8D6EE; }
+        .timeline div { font-size:13px; padding:3px 0; border-bottom:1px solid #F0EFF8; }
+        .emergency { background:#FFF4F1; border:1px solid #FFD9CC; }
+        .emergency h3 { color:#C24A2C; }
+        #audit { max-height:240px; overflow:auto; font-size:12px; font-family: ui-monospace, Consolas, monospace; }
+        #audit div { padding:2px 0; border-bottom:1px solid #F0EFF8; }
+        .tight { margin:0 0 6px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🚨 Emergency Dashboard</h1>
+        <form method="post" action="{{ logout_url }}"><button type="submit">Log out</button></form>
+    </header>
+    <div id="banner">Loading…</div>
+
+    <div class="layout">
+        <aside>
+            <div class="card"><h3>Emergency sessions</h3><div id="sessions" class="muted">Loading…</div></div>
+            <div class="card">
+                <h3>Access log</h3>
+                <button class="btn btn-outline" id="toggleAudit">Show who accessed this data</button>
+                <div id="audit" hidden></div>
+            </div>
+        </aside>
+
+        <main>
+            <div id="map"></div>
+            <div id="detail"></div>
+            <div class="card emergency">
+                <h3>In an emergency</h3>
+                <p class="muted tight">This dashboard cannot call for help by itself. If something looks wrong, call your local emergency number (112 in India) and read out the details from "Copy details for responders" below. A position marked <b>LAST KNOWN LOCATION</b> is older and may not be where she is now.</p>
+            </div>
+        </main>
+    </div>
+
+    <script nonce="{{ csp_nonce }}">
+        const map = L.map('map').setView([20.5937, 78.9629], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors', maxZoom: 19 }).addTo(map);
+        let marker = null, accuracyCircle = null, trail = null, selectedId = null, lastDetail = null, fitted = null;
+
+        // Everything from the server goes through textContent - never innerHTML.
+        function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+        function kv(k, v) { const d = el('div', 'kv'); d.append(el('span', 'muted', k), el('span', null, v)); return d; }
+        function ago(epoch, serverTime) {
+            if (!epoch) return 'unknown';
+            const s = Math.max(0, Math.floor((serverTime || Date.now() / 1000) - epoch));
+            if (s < 60) return s + ' s ago'; if (s < 3600) return Math.floor(s / 60) + ' min ago'; if (s < 86400) return Math.floor(s / 3600) + ' h ago';
+            return Math.floor(s / 86400) + ' d ago';
+        }
+        const SOURCE = { IN_APP_BUTTON: 'in-app button', QUICK_SETTINGS_TILE: 'Quick Settings tile', POWER_x4_SCREEN_HEURISTIC: 'power-button x4 shortcut' };
+        const CALL = {
+            INITIATED: 'Call to Shaun initiated (the phone accepted the request; connection not confirmed)',
+            FAILED: 'Call failed', PERMISSION_MISSING: 'No call placed: calling permission missing',
+            DIALER_OPENED_MANUALLY: 'Dialer opened for her to press Call', DISABLED: 'Automatic call was switched off',
+            NO_NUMBER: 'No number set', NOT_ATTEMPTED: 'Not reported yet' };
+        const SMS = {
+            QUEUED: 'Text alert handed to the phone for trusted contacts', FAILED: 'Text alert failed',
+            PERMISSION_MISSING: 'No text sent: SMS permission missing', DISABLED: 'Text alerts were switched off',
+            NO_TRUSTED_CONTACTS: 'No trusted contact had a saved number', NOT_ATTEMPTED: 'Not reported yet' };
+
+        async function api(path) {
+            const res = await fetch(path, { credentials: 'same-origin' });
+            if (res.status === 401) { window.location.href = {{ login_url|tojson }}; throw new Error('login'); }
+            if (!res.ok) throw new Error(path + ' ' + res.status);
+            return res.json();
+        }
+
+        function renderBanner(sessions, serverTime) {
+            const b = document.getElementById('banner');
+            const active = sessions.filter(s => s.status === 'ACTIVE');
+            if (active.length) { b.className = 'active'; b.textContent = 'EMERGENCY ACTIVE - started ' + ago(active[0].started_epoch, serverTime); }
+            else { b.className = ''; b.textContent = sessions.length ? 'No active emergency. Most recent: ' + ago(sessions[0].started_epoch, serverTime) : 'No emergencies recorded.'; }
+        }
+
+        function renderSessions(sessions, serverTime) {
+            const box = document.getElementById('sessions'); box.replaceChildren();
+            if (!sessions.length) { box.textContent = 'Nothing has been triggered.'; return; }
+            sessions.forEach(s => {
+                const c = el('div', 'card session' + (s.server_session_id === selectedId ? ' selected' : ''));
+                const top = el('div'); top.append(el('span', 'badge ' + s.status, s.status));
+                c.append(top, el('div', null, new Date(s.started_epoch * 1000).toLocaleString()),
+                    el('div', 'muted', 'via ' + (SOURCE[s.trigger_source] || s.trigger_source || 'unknown') + ' - ' + s.location_count + ' position(s)'));
+                c.addEventListener('click', () => { selectedId = s.server_session_id; fitted = null; refresh(); });
+                box.append(c);
+            });
+        }
+
+        function responderText(d) {
+            const s = d.session, l = s.latest_location, lines = ['EMERGENCY - Her Routine', 'Session: ' + s.server_session_id, 'Status: ' + s.status + ', started ' + s.started_at];
+            if (l) {
+                lines.push('Last position: ' + l.latitude.toFixed(6) + ', ' + l.longitude.toFixed(6) + (l.accuracy_m != null ? ' (+/-' + Math.round(l.accuracy_m) + ' m)' : ''));
+                lines.push('Measured: ' + l.measured_at + ' [' + l.source + (l.stale ? ', older position' : '') + ']');
+                lines.push('Map: https://maps.google.com/?q=' + l.latitude + ',' + l.longitude);
+            } else lines.push('Position: none received');
+            lines.push('Call to Shaun: ' + s.call_status);
+            return lines.join('\n');
+        }
+
+        function renderDetail(d) {
+            lastDetail = d;
+            const s = d.session, l = s.latest_location, box = document.getElementById('detail'); box.replaceChildren();
+
+            const loc = el('div', 'card'); loc.append(el('h3', null, 'Location'));
+            if (l) {
+                loc.append(kv('Latitude', l.latitude.toFixed(6)), kv('Longitude', l.longitude.toFixed(6)),
+                    kv('Accuracy', l.accuracy_m != null ? '+/-' + Math.round(l.accuracy_m) + ' m' : 'unknown'),
+                    kv('Measured', ago(l.measured_epoch, d.server_time) + ' (' + l.measured_at + ')'),
+                    kv('Received', ago(Date.parse(l.received_at) / 1000, d.server_time)));
+                if (l.source === 'LAST_KNOWN_LOCATION') loc.append(el('div', 'warn', 'LAST KNOWN LOCATION - an older position, not where she is right now.'));
+                else if (l.stale) loc.append(el('div', 'warn', 'This position was already old when it arrived (phone was offline).'));
+            } else loc.append(el('div', 'muted', 'No position has been received for this emergency yet.'));
+            const actions = el('div');
+            const copy = el('button', 'btn btn-primary', 'Copy details for responders');
+            copy.addEventListener('click', () => { const t = responderText(d); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => alert('Copied.'), () => window.prompt('Copy:', t)); });
+            actions.append(copy);
+            if (l) { const a = el('a', 'btn btn-outline', 'Open in Google Maps'); a.href = 'https://maps.google.com/?q=' + l.latitude + ',' + l.longitude; a.target = '_blank'; a.rel = 'noopener noreferrer'; actions.append(a); }
+            loc.append(actions);
+
+            const st = el('div', 'card'); st.append(el('h3', null, 'Status'),
+                kv('Session', s.status), kv('Started', s.started_at), kv('Ended', s.ended_at || (s.status === 'ACTIVE' ? 'still active' : 'unknown')),
+                kv('Last update', ago(s.last_event_epoch, d.server_time)),
+                el('div', null, '📞 ' + (CALL[s.call_status] || s.call_status)), el('div', null, '✉️ ' + (SMS[s.sms_status] || s.sms_status)));
+            if (s.call_detail) st.append(el('div', 'muted', s.call_detail));
+
+            const tl = el('div', 'card timeline'); tl.append(el('h3', null, 'Timeline'));
+            d.events.forEach(e => tl.append(el('div', null, e.at + '  ' + e.type + (e.detail ? ' - ' + e.detail : ''))));
+            box.append(loc, st, tl);
+
+            const pts = d.locations.map(p => [p.latitude, p.longitude]);
+            if (trail) { map.removeLayer(trail); trail = null; }
+            if (pts.length > 1) trail = L.polyline(pts, { color: '#D64545', weight: 3, opacity: 0.7 }).addTo(map);
+            if (l) {
+                const pos = [l.latitude, l.longitude];
+                if (!marker) marker = L.marker(pos).addTo(map); else marker.setLatLng(pos);
+                if (accuracyCircle) map.removeLayer(accuracyCircle);
+                if (l.accuracy_m != null) accuracyCircle = L.circle(pos, { radius: l.accuracy_m, color: '#1E2153', weight: 1, fillOpacity: 0.08 }).addTo(map);
+                if (fitted !== s.server_session_id) { map.setView(pos, 16); fitted = s.server_session_id; }
+            } else if (marker) { map.removeLayer(marker); marker = null; }
+        }
+
+        async function refresh() {
+            try {
+                const list = await api('/api/emergency/sessions');
+                renderBanner(list.sessions, list.server_time);
+                if (!selectedId && list.sessions.length) selectedId = (list.sessions.find(s => s.status === 'ACTIVE') || list.sessions[0]).server_session_id;
+                renderSessions(list.sessions, list.server_time);
+                if (selectedId) renderDetail(await api('/api/emergency/sessions/' + encodeURIComponent(selectedId)));
+            } catch (e) { if (e.message !== 'login') document.getElementById('banner').textContent = 'Could not reach the server.'; }
+        }
+
+        document.getElementById('toggleAudit').addEventListener('click', async (ev) => {
+            const box = document.getElementById('audit');
+            if (!box.hidden) { box.hidden = true; ev.target.textContent = 'Show who accessed this data'; return; }
+            const data = await api('/api/emergency/audit?limit=100'); box.replaceChildren();
+            data.entries.forEach(e => box.append(el('div', null, e.at + '  ' + e.actor + '  ' + e.action + (e.ip ? '  [' + e.ip + ']' : '') + (e.detail ? '  ' + e.detail : ''))));
+            box.hidden = false; ev.target.textContent = 'Hide access log';
+        });
+
+        refresh();
+        setInterval(refresh, 10000);
+    </script>
+</body>
+</html>
