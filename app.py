@@ -9,6 +9,7 @@ import logging
 import uuid
 from datetime import datetime
 import psycopg2
+from emergency_dashboard import emergency_bp 
 import psycopg2.extras
 import io
 import csv
@@ -17,7 +18,7 @@ from functools import wraps
 # ---- Configuration ----
 logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
-
+app.register_blueprint(emergency_bp)  
 # Allowed origins (exact matches)
 ALLOWED_ORIGINS = {
     "https://christjuniorcollege.in",
